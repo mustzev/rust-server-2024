@@ -1,5 +1,7 @@
 use mongodb::{bson::doc, Client, Database};
 
+use super::schemas::products::create_products_collection;
+
 const MONGODB_DATABASE: &str = "rust-server-2024";
 
 pub async fn init_mongodb_client(mongodb_uri: String) -> Database {
@@ -11,5 +13,6 @@ pub async fn init_mongodb_client(mongodb_uri: String) -> Database {
         .unwrap();
     println!("Pinged your database. Successfully connected to MongoDB!");
     let db = client.database(MONGODB_DATABASE);
+    create_products_collection(db.clone());
     db
 }

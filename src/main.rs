@@ -6,6 +6,7 @@ use crate::{
     mongodb::db::init_mongodb_client, routes::router::make_router,
     utilities::tracing::init_tracing_subscriber,
 };
+
 use axum;
 use dotenvy;
 use std::env;

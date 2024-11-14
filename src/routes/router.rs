@@ -1,10 +1,12 @@
-use crate::{
-    routes::product::product_router::make_product_router, utilities::tracing::make_trace_layer,
-};
+use super::products::router::make_product_router;
+use crate::utilities::{cors::make_cors_layer, tracing::make_trace_layer};
+
+use axum::Router;
 use mongodb::Database;
 
-pub fn make_router(mongodb_db: Database) -> axum::Router {
-    axum::Router::new()
-        .nest("/product", make_product_router(mongodb_db))
+pub fn make_router(mongodb_db: Database) -> Router {
+    Router::new()
+        .nest("/products", make_product_router(mongodb_db))
         .layer(make_trace_layer())
+        .layer(make_cors_layer())
 }

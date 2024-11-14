@@ -1,2 +1,2 @@
-mod product;
+mod products;
 pub mod router;
