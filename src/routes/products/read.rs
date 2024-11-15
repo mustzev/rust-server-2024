@@ -18,10 +18,17 @@ pub async fn read_product(
     Path(id): Path<String>,
 ) -> Result<Json<Option<Product>>, (StatusCode, String)> {
     let result = db
-        .collection(PRODUCTS_COLLECTION_NAME)
+        .collection::<Product>(PRODUCTS_COLLECTION_NAME)
         .find_one(doc! { "_id": ObjectId::parse_str(id).unwrap() })
         .await
         .map_err(internal_error)?;
+
+    match &result {
+        Some(product) => {
+            println!("id: {}", product.id)
+        }
+        None => {}
+    }
 
     Ok(Json(result))
 }

@@ -13,6 +13,6 @@ pub async fn init_mongodb_client(mongodb_uri: String) -> Database {
         .unwrap();
     println!("Pinged your database. Successfully connected to MongoDB!");
     let db = client.database(MONGODB_DATABASE);
-    create_products_collection(db.clone());
+    create_products_collection(&db).await;
     db
 }

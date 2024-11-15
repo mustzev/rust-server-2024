@@ -18,6 +18,8 @@ pub struct ProductInput {
 pub struct Product {
     #[serde(rename = "_id", serialize_with = "serialize_object_id_as_hex_string")]
     id: ObjectId,
-    #[serde(flatten)]
-    input: ProductInput,
+    name: String,
+    description: String,
+    price: f32,
+    quantity: i32,
 }
