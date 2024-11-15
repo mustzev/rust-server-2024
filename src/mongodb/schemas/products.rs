@@ -9,14 +9,13 @@ pub const PRODUCTS_COLLECTION_NAME: &str = "products";
 pub async fn create_products_collection(db: &Database) {
     let validator = doc! {
         "$jsonSchema": doc! {
-           "bsonType": "object",
-           "title": "product object validation",
-           "additionalProperties": false,
-           "properties": doc! {
-              "answer": doc! {
-                 "enum": vec! [ "yes", "no" ],
-              }
-           }
+            "bsonType": "object",
+            "title": "product object validation",
+            "additionalProperties": false,
+            "properties": doc! {
+                "_id": doc! { "bsonType": "objectId" },
+                "answer": doc! { "enum": vec! [ "yes", "no" ] }
+            }
         }
     };
     let _result = db
