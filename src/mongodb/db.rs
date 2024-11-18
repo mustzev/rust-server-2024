@@ -1,5 +1,7 @@
 use mongodb::{bson::doc, Client, Database};
 
+use crate::mongodb::schemas::users::create_users_collection;
+
 use super::schemas::products::create_products_collection;
 
 const MONGODB_DATABASE: &str = "rust-server-2024";
@@ -14,5 +16,6 @@ pub async fn init_mongodb_client(mongodb_uri: String) -> Database {
     println!("Pinged your database. Successfully connected to MongoDB!");
     let db = client.database(MONGODB_DATABASE);
     create_products_collection(&db).await;
+    create_users_collection(&db).await;
     db
 }

@@ -1,6 +1,6 @@
 use super::Product;
 use crate::{
-    mongodb::schemas::products::PRODUCTS_COLLECTION_NAME, utilities::internal_error::internal_error,
+    mongodb::schemas::products::PRODUCTS_COLLECTION_NAME, utilities::error::internal_error,
 };
 
 use axum::{

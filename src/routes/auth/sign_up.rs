@@ -1,17 +1,16 @@
 use axum::{extract::State, http::StatusCode, Json};
 use mongodb::{results::InsertOneResult, Database};
 
-use super::ProductCreate;
-use crate::{
-    mongodb::schemas::products::PRODUCTS_COLLECTION_NAME, utilities::error::internal_error,
-};
+use crate::{mongodb::schemas::users::USERS_COLLECTION_NAME, utilities::error::internal_error};
 
-pub async fn create_product(
+use super::SignUp;
+
+pub async fn sign_up(
     State(db): State<Database>,
-    Json(input): Json<ProductCreate>,
+    Json(input): Json<SignUp>,
 ) -> Result<Json<InsertOneResult>, (StatusCode, String)> {
     let result = db
-        .collection(PRODUCTS_COLLECTION_NAME)
+        .collection(USERS_COLLECTION_NAME)
         .insert_one(input)
         .await
         .map_err(internal_error)?;

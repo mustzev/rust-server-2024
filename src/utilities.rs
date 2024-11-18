@@ -1,3 +1,4 @@
+pub mod auth;
 pub mod cors;
-pub mod internal_error;
+pub mod error;
 pub mod tracing;
