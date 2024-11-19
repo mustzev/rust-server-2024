@@ -4,7 +4,7 @@ pub mod router;
 mod sign_in;
 mod sign_up;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct SignUp {
     username: String,
     password: String,
@@ -18,7 +18,7 @@ pub struct SignIn {
     password: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct User {
     username: String,
     password: String,

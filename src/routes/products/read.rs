@@ -1,12 +1,13 @@
 use super::Product;
 use crate::{
-    mongodb::schemas::products::PRODUCTS_COLLECTION_NAME, utilities::error::internal_error,
+    mongodb::schemas::products::PRODUCTS_COLLECTION_NAME, routes::auth::User,
+    utilities::error::internal_error,
 };
 
 use axum::{
     extract::{Path, State},
     http::StatusCode,
-    Json,
+    Extension, Json,
 };
 use mongodb::{
     bson::{doc, oid::ObjectId},
@@ -15,6 +16,7 @@ use mongodb::{
 
 pub async fn read_product(
     State(db): State<Database>,
+    Extension(user): Extension<User>,
     Path(id): Path<String>,
 ) -> Result<Json<Option<Product>>, (StatusCode, String)> {
     let result = db
@@ -23,9 +25,11 @@ pub async fn read_product(
         .await
         .map_err(internal_error)?;
 
+    println!("current user: {:?}", user);
+
     match &result {
         Some(product) => {
-            println!("id: {}", product.id)
+            println!("product id: {}", product.id)
         }
         None => {}
     }

@@ -16,6 +16,6 @@ pub fn make_product_router(db: Database) -> Router {
         .route("/", post(create_product))
         .route("/:id", put(update_product))
         .route("/:id", delete(delete_product))
-        .layer(middleware::from_fn(authorize))
+        .layer(middleware::from_fn_with_state(db.clone(), authorize))
         .with_state(db)
 }
