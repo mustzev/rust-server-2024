@@ -98,7 +98,7 @@ pub async fn authorize(mut req: Request, next: Next) -> Result<Response<Body>, A
         }
     };
     let mut header = auth_header.split_whitespace();
-    let (bearer, token) = (header.next(), header.next());
+    let (_bearer, token) = (header.next(), header.next());
     let token_data = match decode_jwt(token.unwrap().to_string()) {
         Ok(data) => data,
         Err(_) => {

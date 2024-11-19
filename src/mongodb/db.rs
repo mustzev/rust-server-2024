@@ -1,8 +1,7 @@
 use mongodb::{bson::doc, Client, Database};
 
-use crate::mongodb::schemas::users::create_users_collection;
-
 use super::schemas::products::create_products_collection;
+use crate::mongodb::schemas::users::create_users_collection;
 
 const MONGODB_DATABASE: &str = "rust-server-2024";
 

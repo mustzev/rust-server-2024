@@ -1,8 +1,4 @@
-use mongodb::{
-    bson::doc,
-    options::{ValidationAction, ValidationLevel},
-    Database,
-};
+use mongodb::{bson::doc, Database};
 
 pub const PRODUCTS_COLLECTION_NAME: &str = "products";
 
@@ -14,14 +10,20 @@ pub async fn create_products_collection(db: &Database) {
             "additionalProperties": false,
             "properties": doc! {
                 "_id": doc! { "bsonType": "objectId" },
-                "answer": doc! { "enum": vec! [ "yes", "no" ] }
+                "name": doc! { "bsonType": "string" },
+                "description": doc! { "bsonType": "string" },
+                "price": doc! { "bsonType": "double" },
+                "quantity": doc! { "bsonType": "double" },
             }
         }
     };
-    let _result = db
-        .create_collection(PRODUCTS_COLLECTION_NAME)
-        .validator(validator)
-        .validation_action(ValidationAction::Error)
-        .validation_level(ValidationLevel::Moderate)
+    let _ = db.create_collection(PRODUCTS_COLLECTION_NAME).await;
+    let _ = db
+        .run_command(doc! {
+            "collMod": PRODUCTS_COLLECTION_NAME,
+            "validator": validator,
+            "validationAction": "error",
+            "validationLevel": "moderate",
+        })
         .await;
 }

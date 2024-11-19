@@ -17,3 +17,11 @@ pub struct SignIn {
     username: String,
     password: String,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct User {
+    username: String,
+    password: String,
+    email: String,
+    birthday: String,
+}

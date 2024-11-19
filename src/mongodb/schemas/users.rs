@@ -1,8 +1,4 @@
-use mongodb::{
-    bson::doc,
-    options::{ValidationAction, ValidationLevel},
-    Database,
-};
+use mongodb::{bson::doc, Database};
 
 pub const USERS_COLLECTION_NAME: &str = "users";
 
@@ -14,14 +10,20 @@ pub async fn create_users_collection(db: &Database) {
             "additionalProperties": false,
             "properties": doc! {
                 "_id": doc! { "bsonType": "objectId" },
-                "answer": doc! { "enum": vec! [ "yes", "no" ] }
+                "username": doc! { "bsonType": "string" },
+                "password": doc! { "bsonType": "string" },
+                "email": doc! { "bsonType": "string" },
+                "birthday": doc! { "bsonType": "string" },
             }
         }
     };
-    let _result = db
-        .create_collection(USERS_COLLECTION_NAME)
-        .validator(validator)
-        .validation_action(ValidationAction::Error)
-        .validation_level(ValidationLevel::Moderate)
+    let _ = db.create_collection(USERS_COLLECTION_NAME).await;
+    let _ = db
+        .run_command(doc! {
+            "collMod": USERS_COLLECTION_NAME,
+            "validator": validator,
+            "validationAction": "error",
+            "validationLevel": "moderate",
+        })
         .await;
 }
