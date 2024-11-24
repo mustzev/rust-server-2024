@@ -1,12 +1,5 @@
 services:
-  mongo:
-    image: mongo:latest
-    restart: always
+  rust-server-2024:
+    build: .
     ports:
-      - 27017:27017
-
-  redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - 6379:6379
+      - 9000:9000
