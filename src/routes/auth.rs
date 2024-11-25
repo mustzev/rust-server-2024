@@ -1,3 +1,5 @@
+use mongodb::bson::oid::ObjectId;
+use mongodb::bson::serde_helpers::serialize_object_id_as_hex_string;
 use serde::{Deserialize, Serialize};
 
 pub mod router;
@@ -20,6 +22,8 @@ pub struct SignIn {
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct User {
+    #[serde(rename = "_id", serialize_with = "serialize_object_id_as_hex_string")]
+    pub id: ObjectId,
     username: String,
     password: String,
     email: String,
