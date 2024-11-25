@@ -1,5 +1,3 @@
-use std::time::SystemTime;
-
 use axum::http::StatusCode;
 use mongodb::{
     bson::{doc, oid::ObjectId, Document},
@@ -7,6 +5,7 @@ use mongodb::{
     Database,
 };
 use serde::{Deserialize, Serialize};
+use std::time::SystemTime;
 
 use super::schemas::{
     merchants::MERCHANTS_COLLECTION_NAME, products::PRODUCTS_COLLECTION_NAME,

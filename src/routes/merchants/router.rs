@@ -1,9 +1,8 @@
 use axum::{middleware, routing::post, Router};
 use mongodb::Database;
 
-use crate::{mongodb::cdb::make_cdb, utilities::auth::authorize};
-
 use super::create::create_merchant;
+use crate::{mongodb::cdb::make_cdb, utilities::auth::authorize};
 
 pub fn make_merchant_router(db: Database) -> Router {
     let cdb = make_cdb(db.clone());
