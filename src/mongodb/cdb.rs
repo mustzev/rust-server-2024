@@ -99,7 +99,7 @@ impl Actions<'_> {
         let update = doc! {
             "isDeleted": true,
             "deletedAt": DateTime::now(),
-            "deleteddBy": user.id
+            "deletedBy": user.id
         };
         self.database
             .collection::<Generic>(self.collection_name)
