@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 mod create;
-mod router;
+pub mod router;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct MerchantCreate {
