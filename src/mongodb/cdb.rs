@@ -13,9 +13,9 @@ use super::schemas::{
 use crate::{routes::auth::User, utilities::error::internal_error};
 
 #[derive(Debug, Clone)]
-struct Actions<'a> {
+pub struct Actions {
     database: Database,
-    collection_name: &'a str,
+    collection_name: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -30,8 +30,11 @@ struct Generic {
     deleted_by: ObjectId,
 }
 
-impl Actions<'_> {
-    async fn find_one(self, mut doc: Document) -> Result<Option<Generic>, (StatusCode, String)> {
+impl Actions {
+    pub async fn find_one(
+        self,
+        mut doc: Document,
+    ) -> Result<Option<Generic>, (StatusCode, String)> {
         doc.insert(
             "isDeleted",
             doc! { "$or": [
@@ -40,29 +43,29 @@ impl Actions<'_> {
             ] },
         );
         self.database
-            .collection::<Generic>(self.collection_name)
+            .collection::<Generic>(&self.collection_name)
             .find_one(doc)
             .await
             .map_err(internal_error)
     }
 
-    fn find() {}
+    pub fn find() {}
 
-    async fn insert_one(
+    pub async fn insert_one(
         self,
-        mut input: Generic,
+        mut doc: Document,
         user: User,
     ) -> Result<InsertOneResult, (StatusCode, String)> {
-        input.created_at = DateTime::now();
-        input.created_by = user.id;
+        doc.insert("createdAt", DateTime::now());
+        doc.insert("createdBy", user.id);
         self.database
-            .collection::<Generic>(self.collection_name)
-            .insert_one(input)
+            .collection(&self.collection_name)
+            .insert_one(doc)
             .await
             .map_err(internal_error)
     }
 
-    async fn update_one(
+    pub async fn update_one(
         self,
         mut query: Document,
         mut update: Document,
@@ -78,13 +81,13 @@ impl Actions<'_> {
         update.insert("updatedAt", DateTime::now());
         update.insert("updatedBy", user.id);
         self.database
-            .collection::<Generic>(self.collection_name)
+            .collection::<Generic>(&self.collection_name)
             .update_one(query, update)
             .await
             .map_err(internal_error)
     }
 
-    async fn delete_one(
+    pub async fn delete_one(
         self,
         mut query: Document,
         user: User,
@@ -102,7 +105,7 @@ impl Actions<'_> {
             "deletedBy": user.id
         };
         self.database
-            .collection::<Generic>(self.collection_name)
+            .collection::<Generic>(&self.collection_name)
             .update_one(query, update)
             .await
             .map_err(internal_error)
@@ -110,25 +113,25 @@ impl Actions<'_> {
 }
 
 #[derive(Debug, Clone)]
-pub struct Cdb<'a> {
-    users: Actions<'a>,
-    products: Actions<'a>,
-    merchants: Actions<'a>,
+pub struct Cdb {
+    pub users: Actions,
+    pub products: Actions,
+    pub merchants: Actions,
 }
 
-pub fn make_cdb(db: Database) -> Cdb<'static> {
+pub fn make_cdb(db: Database) -> Cdb {
     let cdb = Cdb {
         users: Actions {
             database: db.clone(),
-            collection_name: USERS_COLLECTION_NAME,
+            collection_name: USERS_COLLECTION_NAME.to_string(),
         },
         products: Actions {
             database: db.clone(),
-            collection_name: PRODUCTS_COLLECTION_NAME,
+            collection_name: PRODUCTS_COLLECTION_NAME.to_string(),
         },
         merchants: Actions {
             database: db,
-            collection_name: MERCHANTS_COLLECTION_NAME,
+            collection_name: MERCHANTS_COLLECTION_NAME.to_string(),
         },
     };
     cdb

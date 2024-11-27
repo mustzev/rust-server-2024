@@ -7,6 +7,7 @@ mod update;
 use mongodb::bson::oid::ObjectId;
 use mongodb::bson::serde_helpers::serialize_object_id_as_hex_string;
 use serde::{Deserialize, Serialize};
+use ts_bind::TsBind;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ProductCreate {
@@ -16,7 +17,7 @@ pub struct ProductCreate {
     quantity: i32,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, TsBind)]
 pub struct Product {
     #[serde(rename = "_id", serialize_with = "serialize_object_id_as_hex_string")]
     id: ObjectId,
