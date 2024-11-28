@@ -1,9 +1,9 @@
 use axum::{extract::State, http::StatusCode, Json};
 use mongodb::{bson::doc, Database};
 
-use super::{SignIn, User};
+use super::SignIn;
 use crate::{
-    mongodb::schemas::users::USERS_COLLECTION_NAME,
+    mongodb::schemas::users::{User, USERS_COLLECTION_NAME},
     utilities::{
         auth::{encode_jwt, verify_password},
         error::internal_error,

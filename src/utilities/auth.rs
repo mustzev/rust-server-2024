@@ -14,7 +14,7 @@ use std::{
 };
 
 use super::error::internal_error;
-use crate::{mongodb::schemas::users::USERS_COLLECTION_NAME, routes::auth::User};
+use crate::mongodb::schemas::users::{User, USERS_COLLECTION_NAME};
 
 const JWT_EXPIRE_IN_HOURS: u64 = 24;
 

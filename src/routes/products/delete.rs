@@ -9,9 +9,9 @@ use mongodb::{
     Database,
 };
 
-use super::Product;
 use crate::{
-    mongodb::schemas::products::PRODUCTS_COLLECTION_NAME, utilities::error::internal_error,
+    mongodb::schemas::products::{Product, PRODUCTS_COLLECTION_NAME},
+    utilities::error::internal_error,
 };
 
 pub async fn delete_product(

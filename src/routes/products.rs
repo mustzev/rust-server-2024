@@ -4,23 +4,10 @@ mod read;
 pub mod router;
 mod update;
 
-use mongodb::bson::oid::ObjectId;
-use mongodb::bson::serde_helpers::serialize_object_id_as_hex_string;
 use serde::{Deserialize, Serialize};
-use ts_bind::TsBind;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ProductCreate {
-    name: String,
-    description: String,
-    price: f32,
-    quantity: i32,
-}
-
-#[derive(Debug, Deserialize, Serialize, TsBind)]
-pub struct Product {
-    #[serde(rename = "_id", serialize_with = "serialize_object_id_as_hex_string")]
-    id: ObjectId,
     name: String,
     description: String,
     price: f32,

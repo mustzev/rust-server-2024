@@ -2,12 +2,11 @@
 import type { ObjectId } from "./ObjectId";
 import type { DateTime } from "./DateTime";
 
-export interface User {
+export interface Merchant {
    id: ObjectId;
-   username: string;
-   password: string;
-   email: string;
-   birthday: string;
+   name: string;
+   description: string;
+   location: string;
    createdAt: DateTime | null;
    createdBy: ObjectId | null;
    updatedAt: DateTime | null;

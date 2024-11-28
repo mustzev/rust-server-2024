@@ -1,6 +1,8 @@
-use super::Product;
 use crate::{
-    mongodb::schemas::products::PRODUCTS_COLLECTION_NAME, routes::auth::User,
+    mongodb::schemas::{
+        products::{Product, PRODUCTS_COLLECTION_NAME},
+        users::User,
+    },
     utilities::error::internal_error,
 };
 

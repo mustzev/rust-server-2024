@@ -1,4 +1,11 @@
-use mongodb::{bson::doc, Database};
+use mongodb::bson::serde_helpers::serialize_object_id_as_hex_string;
+use mongodb::bson::DateTime;
+use mongodb::{
+    bson::{doc, oid::ObjectId},
+    Database,
+};
+use serde::{Deserialize, Serialize};
+use ts_bind::TsBind;
 
 pub const PRODUCTS_COLLECTION_NAME: &str = "products";
 
@@ -13,7 +20,7 @@ pub async fn create_products_collection(db: &Database) {
                 "name": doc! { "bsonType": "string" },
                 "description": doc! { "bsonType": "string" },
                 "price": doc! { "bsonType": "double" },
-                "quantity": doc! { "bsonType": "double" },
+                "quantity": doc! { "bsonType": "int" },
             }
         }
     };
@@ -26,4 +33,30 @@ pub async fn create_products_collection(db: &Database) {
             "validationLevel": "moderate",
         })
         .await;
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, TsBind)]
+#[serde(rename_all = "camelCase")]
+#[ts_bind(rename_all = "camelCase")]
+pub struct Product {
+    #[serde(rename = "_id", serialize_with = "serialize_object_id_as_hex_string")]
+    pub id: ObjectId,
+    pub name: String,
+    pub description: String,
+    pub price: f32,
+    pub quantity: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_at: Option<DateTime>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_by: Option<ObjectId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated_at: Option<DateTime>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated_by: Option<ObjectId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_deleted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deleted_at: Option<DateTime>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deleted_by: Option<ObjectId>,
 }
