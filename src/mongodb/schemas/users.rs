@@ -7,6 +7,10 @@ use mongodb::{
 use serde::{Deserialize, Serialize};
 use ts_bind::TsBind;
 
+use crate::utilities::serde_helpers::{
+    serialize_bson_datetime_as_rfc3339_string_option, serialize_object_id_as_hex_string_option,
+};
+
 pub const USERS_COLLECTION_NAME: &str = "users";
 
 pub async fn create_users_collection(db: &Database) {
@@ -45,18 +49,37 @@ pub struct User {
     pub password: String,
     pub email: String,
     pub birthday: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_bson_datetime_as_rfc3339_string_option"
+    )]
     pub created_at: Option<DateTime>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_object_id_as_hex_string_option"
+    )]
     pub created_by: Option<ObjectId>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_bson_datetime_as_rfc3339_string_option"
+    )]
     pub updated_at: Option<DateTime>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_object_id_as_hex_string_option"
+    )]
     pub updated_by: Option<ObjectId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_deleted: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_bson_datetime_as_rfc3339_string_option"
+    )]
     pub deleted_at: Option<DateTime>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_object_id_as_hex_string_option"
+    )]
     pub deleted_by: Option<ObjectId>,
 }

@@ -12,7 +12,7 @@ use crate::mongodb::{
 
 pub async fn read_merchant(
     State(cdb): State<Cdb>,
-    Extension(user): Extension<User>,
+    Extension(_user): Extension<User>,
     Path(id): Path<String>,
 ) -> Result<Json<Option<Merchant>>, (StatusCode, String)> {
     let result = cdb

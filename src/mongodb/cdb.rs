@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use axum::http::StatusCode;
 use mongodb::{
     bson::{doc, oid::ObjectId, DateTime, Document},
@@ -7,6 +5,7 @@ use mongodb::{
     Database,
 };
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use std::marker::PhantomData;
 
 use super::schemas::{
     merchants::{Merchant, MERCHANTS_COLLECTION_NAME},
@@ -80,8 +79,8 @@ impl<T: DeserializeOwned + Send + Sync> Actions<T> {
         user: User,
     ) -> Result<UpdateResult, (StatusCode, String)> {
         query.insert("isDeleted", doc! { "$ne": true });
-        update.insert("updatedAt", DateTime::now());
-        update.insert("updatedBy", user.id);
+        update.insert("$set.updatedAt", DateTime::now());
+        update.insert("$set.updatedBy", user.id);
         self.database
             .collection::<Generic>(&self.collection_name)
             .update_one(query, update)
