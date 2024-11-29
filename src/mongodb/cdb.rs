@@ -1,10 +1,10 @@
 use axum::http::StatusCode;
 use mongodb::{
-    bson::{doc, oid::ObjectId, DateTime, Document},
+    bson::{doc, DateTime, Document},
     results::{InsertOneResult, UpdateResult},
     Database,
 };
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::de::DeserializeOwned;
 use std::marker::PhantomData;
 
 use super::schemas::{
@@ -32,18 +32,6 @@ where
             _phantom: Default::default(),
         }
     }
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Generic {
-    created_at: DateTime,
-    created_by: ObjectId,
-    updated_at: DateTime,
-    updated_by: ObjectId,
-    is_deleted: bool,
-    deleted_at: DateTime,
-    deleted_by: ObjectId,
 }
 
 impl<T: DeserializeOwned + Send + Sync> Actions<T> {
@@ -79,10 +67,16 @@ impl<T: DeserializeOwned + Send + Sync> Actions<T> {
         user: User,
     ) -> Result<UpdateResult, (StatusCode, String)> {
         query.insert("isDeleted", doc! { "$ne": true });
-        update.insert("$set.updatedAt", DateTime::now());
-        update.insert("$set.updatedBy", user.id);
+        match update.contains_key("$set") {
+            true => {
+                let set_doc = update.get_document_mut("$set").unwrap();
+                set_doc.insert("updatedAt", DateTime::now());
+                set_doc.insert("updatedBy", user.id);
+            }
+            false => (),
+        }
         self.database
-            .collection::<Generic>(&self.collection_name)
+            .collection::<T>(&self.collection_name)
             .update_one(query, update)
             .await
             .map_err(internal_error)
@@ -95,12 +89,14 @@ impl<T: DeserializeOwned + Send + Sync> Actions<T> {
     ) -> Result<UpdateResult, (StatusCode, String)> {
         query.insert("isDeleted", doc! { "$ne": true });
         let update = doc! {
-            "isDeleted": true,
-            "deletedAt": DateTime::now(),
-            "deletedBy": user.id
+                "$set": doc! {
+                    "isDeleted": true,
+                    "deletedAt": DateTime::now(),
+                    "deletedBy": user.id
+            }
         };
         self.database
-            .collection::<Generic>(&self.collection_name)
+            .collection::<T>(&self.collection_name)
             .update_one(query, update)
             .await
             .map_err(internal_error)

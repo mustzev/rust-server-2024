@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 mod create;
+mod delete;
 mod read;
 pub mod router;
 mod update;
