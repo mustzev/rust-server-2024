@@ -1,5 +1,5 @@
 services:
-  rust-server-2024:
+  server:
     build: .
     ports:
-      - 9000:9000
+      - 3000:3000
